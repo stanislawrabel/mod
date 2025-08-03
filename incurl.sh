@@ -6,6 +6,9 @@ echo "📦 Spúšťam inštaláciu OTA DownloadeR pre Termux..."
 # 🛠 Zmeniť repozitáre a nastaviť oprávnenia
 termux-change-repo
 termux-setup-storage
+# Oprava apt a dpkg ak je zaseknuté
+echo -e "${YELLOW}🔁 Fixing dpkg configuration...${RESET}"
+yes N | dpkg --configure -a
 
 # 🧱 Aktualizácie
 pkg upgrade -y
