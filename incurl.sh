@@ -1,34 +1,30 @@
 #!/bin/bash
 set -e
+
+# 🛠 Automatický mód
 export DEBIAN_FRONTEND=noninteractive
-dpkg --configure -a
+export TERM=xterm
 
-# 📦 Update + upgrade bez otázok
-pkg update -y
-pkg upgrade -y --yes
+# 📦 Aktualizácia repozitárov a balíkov
+termux-change-repo
+termux-setup-storage
+pkg update -y && pkg upgrade -y
 
-# 🛠 Inštalácia balíkov bez potvrdenia
-pkg install -y python python2 git tsu curl
+# 📌 Inštalácia závislostí
+pkg install -y python python2 git tsu
+pip install --upgrade pip wheel
+pip install pycryptodome
+pip3 install --upgrade requests pycryptodome git+https://github.com/R0rt1z2/realme-ota
 
-# 🐍 Python knižnice
-pip install -U wheel pycryptodome
-pip3 install -U requests pycryptodome git+https://github.com/R0rt1z2/realme-ota
-
-# ⬇️ Stiahnutie hlavného skriptu + dát
-curl -sLo m.sh https://raw.githubusercontent.com/stanislawrabel/mod/main/m.sh
-curl -sLo models.txt https://raw.githubusercontent.com/stanislawrabel/mod/main/models.txt
-curl -sLo devices.txt https://raw.githubusercontent.com/stanislawrabel/mod/main/devices.txt
-
-# 🗂 Presun a spustiteľné práva
+# 🗂 Stiahnutie tvojho skriptu z GitHubu
+cd ~
+if [ -d "mod" ]; then
+    rm -rf mod
+fi
+git clone https://github.com/stanislawrabel/mod.git
+cd mod
 chmod +x m.sh
-mkdir -p ~/.local/bin
-mv m.sh ~/.local/bin/m
-mv models.txt ~/.local/bin/
-mv devices.txt ~/.local/bin/
 
-# 🔗 Alias
-grep -qxF "alias m='~/.local/bin/m'" ~/.bashrc || echo "alias m='~/.local/bin/m'" >> ~/.bashrc
-
-echo -e "\n\033[1;32m✅ Inštalácia dokončená!\033[0m"
-echo -e "Spusti príkaz: \033[1;33mm\033[0m"
-
+clear
+echo "✅ Inštalácia dokončená."
+echo "▶ Spusti skript príkazom: ./m.sh"
