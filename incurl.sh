@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 export DEBIAN_FRONTEND=noninteractive
+dpkg --configure -a
 
 # 📦 Update + upgrade bez otázok
 pkg update -y
