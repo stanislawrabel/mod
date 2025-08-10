@@ -1,47 +1,33 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/bash
 set -e
+export DEBIAN_FRONTEND=noninteractive
 
-echo "📦 Spúšťam inštaláciu OTA DownloadeR pre Termux..."
-
-# 🛠 Zmeniť repozitáre a nastaviť oprávnenia
-termux-change-repo
-termux-setup-storage
-# Oprava apt a dpkg ak je zaseknuté
-echo -e "${YELLOW}🔁 Fixing dpkg configuration...${RESET}"
-yes N | dpkg --configure -a
-
-# 🧱 Aktualizácie
-pkg upgrade -y
+# 📦 Update + upgrade bez otázok
 pkg update -y
+pkg upgrade -y --yes
 
-# 📦 Základné balíky
-pkg install -y python python2 git tsu
+# 🛠 Inštalácia balíkov bez potvrdenia
+pkg install -y python python2 git tsu curl
 
 # 🐍 Python knižnice
-pip install wheel
-pip install pycryptodome
-pip3 install --upgrade requests pycryptodome git+https://github.com/R0rt1z2/realme-ota
+pip install -U wheel pycryptodome
+pip3 install -U requests pycryptodome git+https://github.com/R0rt1z2/realme-ota
 
-# 📥 Stiahnutie hlavného skriptu z GitHubu
+# ⬇️ Stiahnutie hlavného skriptu + dát
 curl -sLo m.sh https://raw.githubusercontent.com/stanislawrabel/mod/main/m.sh
-chmod +x m.sh
+curl -sLo models.txt https://raw.githubusercontent.com/stanislawrabel/mod/main/models.txt
+curl -sLo devices.txt https://raw.githubusercontent.com/stanislawrabel/mod/main/devices.txt
 
-# 📁 Presun a alias (voliteľné)
+# 🗂 Presun a spustiteľné práva
+chmod +x m.sh
 mkdir -p ~/.local/bin
 mv m.sh ~/.local/bin/m
-# 🧩 Pridaj alias ak ešte neexistuje
-if ! grep -q "alias ota=" ~/.bashrc; then
-  echo "alias ota='~/.local/bin/m'" >> ~/.bashrc
-  echo "✅ Alias 'ota' bol pridaný do ~/.bashrc"
-fi
+mv models.txt ~/.local/bin/
+mv devices.txt ~/.local/bin/
 
+# 🔗 Alias
+grep -qxF "alias m='~/.local/bin/m'" ~/.bashrc || echo "alias m='~/.local/bin/m'" >> ~/.bashrc
 
-# 🔄 Načítanie aliasov
-source ~/.bashrc || true
-
-clear
-echo -e "\n🎉 ${GREEN}Inštalácia dokončená!${RESET}"
-echo -e "▶️  Spusť skript príkazom: ${YELLOW}odar${RESET}"
-
-
+echo -e "\n\033[1;32m✅ Inštalácia dokončená!\033[0m"
+echo -e "Spusti príkaz: \033[1;33mm\033[0m"
 
