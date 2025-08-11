@@ -26,5 +26,8 @@ curl -sSL "$REPO/devices.txt" -o devices.txt
 
 chmod +x m.sh
 
-echo "✅ Installation complete!"
-echo "▶ You can now run: ./m.sh"
+# 🔗 Alias
+grep -qxF "alias m='~/.local/bin/m'" ~/.bashrc || echo "alias m='~/.local/bin/m'" >> ~/.bashrc
+
+echo -e "\n\033[1;32m✅ Installation complete!"\033[0m"
+echo "▶ You can now run: \033[1;33mm\033[0m"
