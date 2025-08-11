@@ -26,8 +26,12 @@ curl -sSL "$REPO/devices.txt" -o devices.txt
 
 chmod +x m.sh
 
-# 🔗 Alias
-grep -qxF "alias m='~/.local/bin/m'" ~/.bashrc || echo "alias m='~/.local/bin/m'" >> ~/.bashrc
+# 🛠️ Pridanie aliasu pre jednoduché spúšťanie
+if ! grep -q "alias m=" ~/.bashrc; then
+    echo "alias m='bash ~/m.sh'" >> ~/.bashrc
+    echo -e "\e[32m✅ Alias 'm' bol pridaný. Na použitie zadaj: source ~/.bashrc\e[0m"
+fi
+source ~/.bashrc
 
 echo -e "\n\033[1;32m✅ Installation complete!"\033[0m"
 echo "▶ You can now run: \033[1;33mm\033[0m"
