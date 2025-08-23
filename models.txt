@@ -25,6 +25,7 @@ RMX3843|Realme 12 Pro 5G
 RMX3840|Realme 12 Pro+ 5G
 RMX3841|Realme 12 Pro+ 5G (CN)
 RMX3951|Realme 13 5G
+RMX3952|Realme 13 5G (CN)
 RMX5000|Realme 13+ 5G
 RMX3988|Realme 13 Pro 5G (GL)
 RMX3989|Realme 13 Pro 5G (CN)
