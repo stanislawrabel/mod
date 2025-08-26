@@ -12,8 +12,9 @@ if ! command -v aria2c &> /dev/null; then
 fi
 
 clear
-echo -e "${GREEN}================================================${RESET}"
-echo -e "${GREEN}===${RESET}          ${YELLOW}DownloadeR by Stano36${RESET}           ${GREEN}===${RESET}"                          echo -e "${GREEN}================================================${RESET}"
+echo -e "${GREEN}==========================================${RESET}"
+echo -e "${GREEN}===${RESET}       ${YELLOW}DownloadeR by Stano36${RESET}        ${GREEN}===${RESET}"                          
+echo -e "${GREEN}==========================================${RESET}"
 echo -e
 read -p "Enter URL: " url
 
