@@ -34,7 +34,7 @@ chmod +x m.sh All_regions_m.sh d.sh
 PREFIX=${PREFIX:-/data/data/com.termux/files/usr}
 mkdir -p "$PREFIX/bin"
 
-for name in o s d; do
+for name in m a d; do
   target="$HOME/${name}.sh"
   wrapper="$PREFIX/bin/$name"
   cat > "$wrapper" <<EOF
@@ -43,5 +43,5 @@ exec bash "$target" "\$@"
 EOF
   chmod +x "$wrapper"
 done
-echo -e "\e[32m✅ Installation completed. Use commands: o | s | d\e[0m"
+echo -e "\e[32m✅ Installation completed. Use commands: m | a | d\e[0m"
 exit
