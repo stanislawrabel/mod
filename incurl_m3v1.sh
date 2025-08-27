@@ -15,7 +15,7 @@ yes "" | pkg update -y
 yes "" | pkg upgrade -y
 
 echo "📦 Installing required packages..."
-pkg install aria 2
+pkg install aria2
 pkg install -y python python2 git tsu curl
 pip install wheel
 pip install pycryptodome
