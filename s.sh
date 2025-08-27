@@ -159,9 +159,16 @@ echo -e
 ${GREEN}$about_update_url${RESET}"
   
 
-    download_link=$(echo "$output" | grep -o 'http[s]*://[^"]*' | head -n 1 | sed 's/["\r\n]*$//')
-    modified_link=$(echo "$download_link" | sed 's/componentotacostmanual/opexcostmanual/g')
+    # Hľadaj presne OTA link obsahujúci componentotacostmanual
+download_link=$(echo "$output" | grep -o 'https://[^"]*componentotacostmanual[^"]*' | head -n 1)
 
+# Ak sa nenašiel, vezmi prvý link v odpovedi
+if [[ -z "$download_link" ]]; then
+    download_link=$(echo "$output" | grep -o 'https://[^"]*' | head -n 1)
+fi
+
+# Nahradenie componentotacostmanual -> opexcostmanual
+modified_link="${download_link/componentotacostmanual/opexcostmanual}"
     
     if [[ -n "$modified_link" ]]; then
         echo -e "  📥                  Download link: 
