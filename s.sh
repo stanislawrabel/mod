@@ -99,7 +99,7 @@ run_ota() {
   clean_model=$(echo "$device_model" | sed 's/IN\|RU\|TR\|EEA\|T2//g')
   base_model="$clean_model"
 
-  ota_command="realme-ota $server $device_model ${base_model}_11.${version}.01_0001_100001010000 6 $nv_id"
+  ota_command="realme-ota $server $device_model ${base_model}_11.${version}.01_0001_100001010001 6 $nv_id"
   
 
   output=$(eval "$ota_command")
@@ -216,10 +216,10 @@ run_ota_all_regions() {
 clear
 
 echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|==${RESET}   ${GREEN}Share OTA link${RESET}  ${RED}by${RESET} ${BLUE}Stano 36${RESET}   ${GREEN}==|${RESET}"
+echo -e "${GREEN}|==${RESET}   ${GREEN}Share OTA link${RESET}  ${RED}by${RESET} ${BLUE}Stano36${RESET}    ${GREEN}==|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
 
-echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${WHITE}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
+echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
 
 
 
