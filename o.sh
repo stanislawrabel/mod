@@ -171,8 +171,8 @@ ${GREEN}$modified_link${RESET}"
 clear
 
 echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|==${RESET} ${GREEN}   OTA FindeR${RESET} ${RED}  by${RESET} ${BLUE}Stano 36${RESET}  ${GREEN}   ==|${RESET}"
-echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${WHITE}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
+echo -e "${GREEN}|==${RESET} ${GREEN}   OTA FindeR${RESET} ${RED}  by${RESET} ${BLUE}Stano36${RESET}   ${GREEN}   ==|${RESET}"
+echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
 printf "| %-5s | %-6s | %-18s |\n" "Mani." "R code" "Region"
 echo -e "+-------------------------------------+"
