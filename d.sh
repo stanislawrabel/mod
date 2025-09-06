@@ -21,9 +21,9 @@ fi
 
 clear
 echo -e "${GREEN}+========================================+${RESET}"
-echo -e "${GREEN}|===${RESET}   ${YELLOW}DownloadeR${RESET}   ${RED}by${RESET} ${BLUE}Stano36${RESET}        ${GREEN}===|${RESET}"                          
+echo -e "${GREEN}|===${RESET}     ${YELLOW}DownloadeR${RESET}   ${RED}by${RESET} ${BLUE}Stano36${RESET}      ${GREEN}===|${RESET}"                          
 echo -e "${GREEN}+========================================+${RESET}"
-echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}   realme   ${RESET} ${GREEN_BG}${WHITE}    oppo   ${RESET} ${RED_BG}${WHITE}   OnePlus   ${RESET} ${GREEN}|${RESET}"
+echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}   realme   ${RESET} ${GREEN_BG}${BLACK}    oppo   ${RESET} ${RED_BG}${WHITE}   OnePlus   ${RESET} ${GREEN}|${RESET}"
 echo -e "${GREEN}+========================================+${RESET}"
 echo -e
 read -p "Enter URL: " url
