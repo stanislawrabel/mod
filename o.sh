@@ -187,7 +187,6 @@ printf "|  ${YELLOW}%-4s${RESET} | %-6s | %-18s |\n" "$key" "$region_code" "$reg
 done
 
 
-echo -e "+-------------------------------------+"
 echo -e "${GREEN}+=====================================+${RESET}"
 echo -e "${GREEN}|==${RESET}" "OTA version :  ${BLUE}A${RESET} ,  ${BLUE}C${RESET} ,  ${BLUE}F${RESET} ,  ${BLUE}H${RESET}"      "${GREEN}==|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
@@ -225,7 +224,7 @@ device_name="${MODEL_NAMES[$clean_model]:-Unknown}"
 printf "| ${RED}%-3s${RESET} | ${GREEN}%-30s${RESET} |\n" "$index" "$device_name" 
     done
 
-    echo -e "+-----+--------------------------------+"
+    
   echo -e "${GREEN}+======================================+${RESET}"
 
   read -p "🔢 Select device number: " selected
