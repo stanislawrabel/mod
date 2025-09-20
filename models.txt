@@ -81,6 +81,8 @@ RMX5090|Realme GT 7 Pro Racing Edition
 RMX6688|Realme GT7
 RMX5030|Realme P3 Ultra 5G (IN)
 RMX5031|Realme P3 Ultra 5G (GL)
+RMX3395|Realme Narzo 50 Pro 5G (IN)
+RMX3396|Realme Narzo 50 Pro 5G (GL)
 A001OP|OPPO Reno3 (SoftBank)
 A002OP|OPPO Reno3 A (SoftBank)
 A101OP|OPPO Reno5 A (SoftBank)
