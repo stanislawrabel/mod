@@ -39,8 +39,8 @@ RMX5074|Realme 14T 5G Global
 RMX5078|Realme 14T 5G India
 RMX5056|Realme 14 Pro 5G India
 RMX5057|Realme 14 Pro 5G Global
-RMX5051|Realme 14 Pro+ 5G India
-RMX5054|Realme 14 Pro+ 5G Global
+RMX5051|Realme 14 Pro+ 5G (GL)
+RMX5054|Realme 14 Pro+ 5G (EU)
 RMX2202|Realme GT 5G
 RMX3360|Realme GT Master Edition
 RMX3361|Realme GT Master Edition
