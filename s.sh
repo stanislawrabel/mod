@@ -237,136 +237,104 @@ done
 echo -e "${GREEN}+=====================================+${RESET}"
 echo -e "${GREEN}|==${RESET}" "OTA version :  ${BLUE}A${RESET} ,  ${BLUE}C${RESET} ,  ${BLUE}F${RESET} ,  ${BLUE}H${RESET}"      "${GREEN}==|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
-# Zoznam prefixov
-echo -e "📦 Choose: ${YELLOW}1) RMX${RESET},  ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
+# # 📦 Výber prefixu
+echo -e "\n📦 Choose model prefix:  ${YELLOW}1) RMX${RESET},  ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
 read -p "💡 Select an option (1/2/3): " choice
 
-if [[ "$choice" == "1" ]]; then
-        COLOR=$YELLOW; prefix="RMX"
-    elif [[ "$choice" == "2" ]]; then
-        COLOR=$GREEN; prefix="CPH"
-    elif [[ "$choice" == "3" ]]; then
-        read -p "🧩 Enter your custom prefix (e.g. XYZ): " prefix
-        if [[ -z "$prefix" ]]; then
-            echo "❌ Prefix cannot be empty."; exit 1
-        fi
-    else
-        echo "❌ Invalid choice."; exit 1
-    fi
+case "$choice" in
+  1) COLOR=$YELLOW; prefix="RMX" ;;
+  2) COLOR=$GREEN; prefix="CPH" ;;
+  3)
+     read -p "🧩 Enter your custom prefix (e.g. XYZ): " prefix
+     [[ -z "$prefix" ]] && { echo "❌ Prefix cannot be empty."; exit 1; }
+     ;;
+  *) echo "❌ Invalid choice."; exit 1 ;;
+esac
 
-    echo -e "${COLOR}➡️  You selected option $choice${RESET}"
+# 🔍 Vyhľadávanie podľa názvu zariadenia
+read -p "🔍 Search model by name (or leave blank to skip): " search_name
+if [[ -n "$search_name" ]]; then
+  matches=$(grep -i "$search_name" models.txt)
+  if [[ -z "$matches" ]]; then
+    echo "❌ No matching models found for '$search_name'."
+    exit 1
+  fi
 
-    # 🧩 Po zadaní model number
-read -p "🔢 Enter model number : " model_number
-device_model="${prefix}${model_number}"
-echo -e "✅ Selected model: ${COLOR}$device_model${RESET}"
+  echo -e "\n📋 Found models:"
+  mapfile -t match_array < <(echo "$matches")
 
-# 🧹 Odstráni regionálny suffix (EEA, IN, TR, RU, T2 atď.)
-base_model=$(echo "$device_model" | sed 's/EEA\|IN\|TR\|RU\|T2//g')
+  for i in "${!match_array[@]}"; do
+    IFS='|' read -r codes name <<< "${match_array[$i]}"
+    echo -e "${YELLOW}$((i+1)).${RESET} 🟢 ${GREEN}${name}${RESET} → ${BLUE}$(echo "$codes" | xargs)${RESET}"
+  done
 
-# 🔍 Vyhľadanie názvu modelu v models.txt podľa základného modelu
-model_name=$(grep -i "^$base_model" models.txt | cut -d'|' -f2 | xargs)
+  echo
+  read -p "🔢 Select model number (1-${#match_array[@]}): " model_choice
 
-if [[ -n "$model_name" ]]; then
-    echo -e "📱 Model name: ${COLOR}${model_name}${RESET}"
+  if ! [[ "$model_choice" =~ ^[0-9]+$ ]] || (( model_choice < 1 || model_choice > ${#match_array[@]} )); then
+    echo "❌ Invalid choice."
+    exit 1
+  fi
+
+  # 📦 Získaj vybraný model
+  IFS='|' read -r codes name <<< "${match_array[$((model_choice-1))]}"
+  model_name=$(echo "$name" | xargs)
+  IFS=',' read -ra model_variants <<< "$(echo "$codes" | xargs)"
+
+  echo -e "\n✅ Selected device: ${GREEN}${model_name}${RESET}"
+  echo -e "📦 Variants: ${YELLOW}${model_variants[*]}${RESET}"
 else
-    echo -e "📱 Model name: ${RED}Unknown model (not found in models.txt)${RESET}"
-fi    
+  read -p "🔢 Enter model number : " model_number
+  device_model="${prefix}${model_number}"
+  model_name="${MODEL_NAMES[$device_model]}"
+  echo -e "✅ Selected model: ${GREEN}${model_name:-Unknown}${RESET}  (${YELLOW}$device_model${RESET})"
+  model_variants=("$device_model")
+fi
 
-
-
-# 🔧 Zadanie od používateľa
-
+# 🧩 Zadanie OTA verzie
 read -p "🧩 Enter OTA version: " version_input
-
-
 version="${version_input^^}"
 
+# 🚀 Spustenie vyhľadávania pre všetky varianty
+for variant in "${model_variants[@]}"; do
+  echo -e "\n🔍 Searching OTA for ${YELLOW}$variant${RESET} ..."
+  run_ota_all_regions "$variant" "$version"
+done
 
-run_ota_all_regions "$device_model" "$version"
-
-  # 🔁 Cyklus pre ďalšie voľby
+# 🔁 Cyklus pre ďalšie voľby
 while true; do
-    echo -e "\n🔄 1 - Change only region/version"
+    echo -e "\n🔄 1 - Change OTA version"
     echo -e "🔄 2 - Change device model"
     echo -e "❌ 3 - End script"
-   
+    echo
+
     read -p "💡 Select an option (1/2/3): " option
+
     case "$option" in
         1)
-            read -p "📌 Manifest + OTA version : " input
-            region="${input:0:${#input}-1}"
-            version="${input: -1}"
-            if [[ -z "${REGIONS[$region]}" || -z "${VERSIONS[$version]}" ]]; then
-                echo "❌ Invalid input."
+            echo
+            read -p "🧩 Enter OTA version (A/C/F/H): " version
+            version=$(echo "$version" | tr '[:lower:]' '[:upper:]')  # prevod na veľké písmená
+
+            if [[ -z "$version" || ! "$version" =~ ^[ACFH]$ ]]; then
+                echo -e "${RED}❌ Invalid OTA version.${RESET}"
                 continue
             fi
-            run_ota
+
+            echo -e "\n🔍 Searching OTA for ${GREEN}$selected_model${RESET} (version ${YELLOW}$version${RESET}) ..."
+            run_ota_all_regions "$selected_model" "$version"
             ;;
         2)
-            bash "$0"  # reštart skriptu
+            echo -e "\n🔁 Restarting to select new device..."
+            bash "$0"
+            exit 0
             ;;
         3)
             echo -e "👋 Goodbye."
             exit 0
             ;;
         *)
-            echo "❌ Invalid option."
+            echo -e "${RED}❌ Invalid option.${RESET}"
             ;;
     esac
 done
-fi
-if ! [[ "$selected" =~ ^[0-9]+$ ]] || (( selected < 1 || selected > total )); then
-    echo "❌ Invalid selection."; exit 1
-fi
-
-IFS='|' read -r selected_model region version <<< "${devices[$((selected-1))]}"
-device_model="$(echo $selected_model | xargs)"
-region="$(echo $region | xargs)"
-version="$(echo $version | xargs)"
-echo -e "✅ Selected device: ${PURPLE}$selected_name${RESET}  →  ${BLUE}$device_model${RESET}, ${YELLOW}$region${RESET}, ${BLUE}$version${RESET}"
-else
-    if [[ "$choice" == "1" ]]; then
-        COLOR=$YELLOW; prefix="RMX"
-    elif [[ "$choice" == "2" ]]; then
-        COLOR=$GREEN; prefix="CPH"
-    elif [[ "$choice" == "3" ]]; then
-        read -p "🧩 Enter your custom prefix (e.g. XYZ): " prefix
-        if [[ -z "$prefix" ]]; then
-            echo "❌ Prefix cannot be empty."; exit 1
-        fi
-    else
-        echo "❌ Invalid choice."; exit 1
-    fi
-
-    echo -e "${COLOR}➡️  You selected option $choice${RESET}"
-
-    # 🧩 Po zadaní model number
-read -p "🔢 Enter model number : " model_number
-device_model="${prefix}${model_number}"
-echo -e "✅ Selected model: ${COLOR}$device_model${RESET}"
-
-# 🧹 Odstráni regionálny suffix (EEA, IN, TR, RU, T2 atď.)
-base_model=$(echo "$device_model" | sed 's/EEA\|IN\|TR\|RU\|T2//g')
-
-# 🔍 Vyhľadanie názvu modelu v models.txt podľa základného modelu
-model_name=$(grep -i "^$base_model" models.txt | cut -d'|' -f2 | xargs)
-
-if [[ -n "$model_name" ]]; then
-    echo -e "📱 Model name: ${COLOR}${model_name}${RESET}"
-else
-    echo -e "📱 Model name: ${RED}Unknown model (not found in models.txt)${RESET}"
-fi    
-
-    read -p "📌 Manifest + OTA version : " input
-    region="${input:0:${#input}-1}"
-    version="${input: -1}"
-
-    if [[ -z "${REGIONS[$region]}" || -z "${VERSIONS[$version]}" ]]; then
-        echo -e "❌ Invalid input! Exiting."
-        exit 1
-    fi
-fi
-
-# ✅ Zavolanie OTA funkcie alebo skriptu
-run_ota
