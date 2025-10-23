@@ -216,7 +216,7 @@ run_ota_all_regions() {
 clear
 
 echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|==${RESET}   ${GREEN}Share OTA link${RESET}  ${RED}by${RESET} ${BLUE}Stano36${RESET}    ${GREEN}==|${RESET}"
+echo -e "${GREEN}|==${RESET}  ${GREEN}Share OTA links${RESET}  ${RED}by${RESET} ${BLUE}Stano36${RESET}   ${GREEN}==|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
 
 echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
@@ -239,7 +239,7 @@ echo -e "${GREEN}|==${RESET}" "OTA version :  ${BLUE}A${RESET} ,  ${BLUE}C${RESE
 echo -e "${GREEN}+=====================================+${RESET}"
 # # 📦 Výber prefixu
 echo -e "\n📦 Choose model prefix:  ${YELLOW}1) RMX${RESET},  "
-echo -e "                  ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
+echo -e "      ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
 read -p "💡 Select an option (1/2/3): " choice
 
 case "$choice" in
