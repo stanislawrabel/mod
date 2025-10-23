@@ -390,7 +390,7 @@ while true; do
             fi
 
             echo -e "\n🔍 Searching OTA for ${GREEN}$selected_model${RESET} (version ${YELLOW}$version${RESET}) ..."
-            run_ota_all_regions "$selected_model" "$version"
+            run_ota "$selected_model" "$version"
             ;;
         2)
             echo -e "\n🔁 Restarting to select new device..."
