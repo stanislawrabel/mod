@@ -71,6 +71,10 @@ fi
 
 # 📌 Funkcia na spracovanie OTA
 run_ota() {
+    if [[ -z "$region" || -z "${REGIONS[$region]}" ]]; then
+        echo -e "${YELLOW}⚠️  Region not set or invalid, using default 44 (EUEX).${RESET}"
+        region="44"
+    fi
     region_data=(${REGIONS[$region]})
     region_code=${region_data[0]}
     region_name=${region_data[1]}
