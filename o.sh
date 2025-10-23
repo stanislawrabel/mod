@@ -371,33 +371,38 @@ run_ota
 
 # 🔁 Cyklus pre ďalšie voľby
 while true; do
-    echo -e "\n🔄 1 - Change only region/version"
+    echo -e "\n🔄 1 - Change OTA version"
     echo -e "🔄 2 - Change device model"
     echo -e "❌ 3 - End script"
-    echo -e "⬇️  4 -${GREEN}$Show URLs${RESET} (long press to open the menu)"
-    echo -e "     → More > Select URL"
-    echo -e "     → ${PURPLE}Tap to copy the link${RESET}, ${BLUE}long press to open in browser${RESET}"
+    echo
+
     read -p "💡 Select an option (1/2/3): " option
+
     case "$option" in
         1)
-            read -p "📌 Manifest + OTA version (e.g. 33F): " input
-            region="${input:0:${#input}-1}"
-            version="${input: -1}"
-            if [[ -z "${REGIONS[$region]}" || -z "${VERSIONS[$version]}" ]]; then
-                echo "❌ Invalid input."
+            echo
+            read -p "🧩 Enter OTA version (A/C/F/H): " version
+            version=$(echo "$version" | tr '[:lower:]' '[:upper:]')  # prevod na veľké písmená
+
+            if [[ -z "$version" || ! "$version" =~ ^[ACFH]$ ]]; then
+                echo -e "${RED}❌ Invalid OTA version.${RESET}"
                 continue
             fi
-            run_ota
+
+            echo -e "\n🔍 Searching OTA for ${GREEN}$selected_model${RESET} (version ${YELLOW}$version${RESET}) ..."
+            run_ota_all_regions "$selected_model" "$version"
             ;;
         2)
-            bash "$0"  # reštart skriptu
+            echo -e "\n🔁 Restarting to select new device..."
+            bash "$0"
+            exit 0
             ;;
         3)
             echo -e "👋 Goodbye."
             exit 0
             ;;
         *)
-            echo "❌ Invalid option."
+            echo -e "${RED}❌ Invalid option.${RESET}"
             ;;
     esac
 done
