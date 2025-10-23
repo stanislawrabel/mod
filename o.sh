@@ -57,25 +57,16 @@ declare -A SERVERS=(
 
 
 
-# 🧠 Načítanie modelov z models.txt
 declare -A MODEL_NAMES
-
-if [[ -f "models.txt" ]]; then
-    while IFS='|' read -r codes name; do
-        codes=$(echo "$codes" | xargs)
-        name=$(echo "$name" | xargs)
-        IFS=',' read -ra variants <<< "$codes"
-        for code in "${variants[@]}"; do
-            code=$(echo "$code" | xargs)
-            MODEL_NAMES["$code"]="$name"
-        done
-    done < models.txt
-    echo "🧠 Načítané modely: ${#MODEL_NAMES[@]}"
-else
-    echo "❌ Súbor models.txt neexistuje!"
-    exit 1
+if [[ -f models.txt ]]; then
+  while IFS='|' read -r codes name; do
+    IFS=',' read -ra variants <<< "$codes"
+    for code in "${variants[@]}"; do
+      code_trimmed=$(echo "$code" | xargs)
+      MODEL_NAMES["$code_trimmed"]="$name"
+    done
+  done < models.txt
 fi
-
 
 
 # 📌 Funkcia na spracovanie OTA
