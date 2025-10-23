@@ -282,6 +282,33 @@ else
 read -p "🔢 Enter model number : " model_number
 device_model="${prefix}${model_number}"
 echo -e "✅ Selected model: ${COLOR}$device_model${RESET}"
+# 🧠 Automatická detekcia Manifestu (region kódu) podľa suffixu v modeli
+declare -A REGION_DEFAULTS=(
+  [EEA]="44"  # Európa
+  [IN]="1B"   # India
+  [TR]="51"   # Turecko
+  [RU]="37"   # Rusko
+  [CN]="97"   # Čína
+)
+
+model_clean=$(echo "$device_model" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')
+region=""
+
+for key in "${!REGION_DEFAULTS[@]}"; do
+  if [[ "$model_clean" == *"$key" ]]; then
+    region="${REGION_DEFAULTS[$key]}"
+    region_name="$key"
+    break
+  fi
+done
+
+# Ak suffix nenašiel → predvolená EEA (44)
+if [[ -z "$region" ]]; then
+  region="44"
+  region_name="EEA"
+fi
+
+echo -e "🌍 Detected region: ${YELLOW}${region_name}${RESET} (${GREEN}$region${RESET})"
 
 # 🧹 Odstráni regionálny suffix (EEA, IN, TR, RU, T2 atď.)
 base_model=$(echo "$device_model" | sed 's/EEA\|IN\|TR\|RU\|T2//g')
