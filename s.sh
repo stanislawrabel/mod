@@ -238,7 +238,8 @@ echo -e "${GREEN}+=====================================+${RESET}"
 echo -e "${GREEN}|==${RESET}" "OTA version :  ${BLUE}A${RESET} ,  ${BLUE}C${RESET} ,  ${BLUE}F${RESET} ,  ${BLUE}H${RESET}"      "${GREEN}==|${RESET}"
 echo -e "${GREEN}+=====================================+${RESET}"
 # # 📦 Výber prefixu
-echo -e "\n📦 Choose model prefix:  ${YELLOW}1) RMX${RESET},  ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
+echo -e "\n📦 Choose model prefix:  ${YELLOW}1) RMX${RESET},  "
+echo -e "                  ${GREEN}2) CPH${RESET},  ${BLUE}3) Custom${RESET}"
 read -p "💡 Select an option (1/2/3): " choice
 
 case "$choice" in
