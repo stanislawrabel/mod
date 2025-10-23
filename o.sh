@@ -304,39 +304,14 @@ else
     echo -e "📱 Model name: ${RED}Unknown model (not found in models.txt)${RESET}"
 fi    
 
-    # 🧩 Automatická detekcia regiónu zo suffixu modelu
-declare -A REGION_DEFAULTS=(
-    [EEA]="44"   # Európa
-    [IN]="1B"    # India
-    [TR]="51"    # Turecko
-    [RU]="37"    # Rusko
-    [CN]="97"    # Čína
-)
-
-# Skús rozpoznať región podľa modelu
-region=""
-for suffix in "${!REGION_DEFAULTS[@]}"; do
-    if [[ "$device_model" == *"$suffix"* ]]; then
-        region="${REGION_DEFAULTS[$suffix]}"
-        break
-    fi
-done
-
-# Ak sa nenašlo, defaultne EUEX (Európa)
-region="${region:-44}"
-
-region_name=$(echo "${REGIONS[$region]}" | cut -d' ' -f2-)
-echo -e "🌍 Detected region: ${YELLOW}${region_name}${RESET} (Manifest ${GREEN}$region${RESET})"
-
-# 📌 Teraz už len OTA verzia
-read -p "🧩 Enter OTA version (A/C/F/H): " version_input
-version="${version_input^^}"  # preveď na veľké písmeno
-
-if [[ -z "${VERSIONS[$version]}" ]]; then
-    echo -e "❌ Invalid OTA version!"
-    exit 1
+read -p "📌 Manifest + OTA version (e.g. 33F): " input
+            region="${input:0:${#input}-1}"
+            version="${input: -1}"
+            if [[ -z "${REGIONS[$region]}" || -z "${VERSIONS[$version]}" ]]; then
+                echo "❌ Invalid input."
+                continue
+            fi
 fi
-
 
 run_ota
 
