@@ -54,18 +54,27 @@ declare -A SERVERS=(
   [51]="-r 0"
 )
 
+
+
+
+# 🧠 Načítanie modelov z models.txt
 declare -A MODEL_NAMES
-while IFS='|' read -r code name; do
-MODEL_NAMES["$code"]="$name"
-done < models.txt
-# Načítanie názvov modelov
-declare -A MODEL_NAMES
-[[ -f models.txt ]] && while IFS='|' read -r code name; do
-  MODEL_NAMES["$code"]="$name"
-done < models.txt
 
-
-
+if [[ -f "models.txt" ]]; then
+    while IFS='|' read -r codes name; do
+        codes=$(echo "$codes" | xargs)
+        name=$(echo "$name" | xargs)
+        IFS=',' read -ra variants <<< "$codes"
+        for code in "${variants[@]}"; do
+            code=$(echo "$code" | xargs)
+            MODEL_NAMES["$code"]="$name"
+        done
+    done < models.txt
+    echo "🧠 Načítané modely: ${#MODEL_NAMES[@]}"
+else
+    echo "❌ Súbor models.txt neexistuje!"
+    exit 1
+fi
 
 
 
