@@ -326,38 +326,36 @@ else
     echo -e "📱 Model name: ${RED}Unknown model (not found in models.txt)${RESET}"
 fi    
 
-# 🔍 Automatické zistenie regiónu podľa suffixu v modeli
+# 🔍 Pokus o načítanie regiónu podľa názvu modelu
+region=""
+region_label=""
+
+# Detekcia podľa suffixu (EEA, IN, TR, RU, CN)
 if [[ "$device_model" =~ EEA$ ]]; then
-    region="44"
-    region_label="EEA"
+    region="44"; region_label="EEA"
 elif [[ "$device_model" =~ IN$ ]]; then
-    region="1B"
-    region_label="IN"
+    region="1B"; region_label="IN"
 elif [[ "$device_model" =~ TR$ ]]; then
-    region="51"
-    region_label="TR"
+    region="51"; region_label="TR"
 elif [[ "$device_model" =~ RU$ ]]; then
-    region="37"
-    region_label="RU"
+    region="37"; region_label="RU"
 elif [[ "$device_model" =~ CN$ ]]; then
-    region="97"
-    region_label="CN"
-else
-    region=""
+    region="97"; region_label="CN"
 fi
 
-# 💡 Rozhodni sa podľa toho, či sa podarilo region určiť
+# 💡 Ak sa region zistil → vypýta iba OTA verziu
 if [[ -n "$region" ]]; then
     echo -e "🌍 Detected region: ${GREEN}${region_label} (${region})${RESET}"
     read -p "🧩 Enter OTA version (A/C/F/H): " version
-    version="${version^^}"  # konverzia na veľké písmená
+    version="${version^^}"
     input="${region}${version}"
 else
+    # Ak sa region nezistil → používateľ musí zadať Manifest + OTA
+    echo -e "🌍 ${YELLOW}Region not detected — please enter Manifest + OTA manually.${RESET}"
     read -p "📌 Manifest + OTA version (e.g. 33F): " input
     region="${input:0:${#input}-1}"
     version="${input: -1}"
 fi
-
 # 🧠 Validácia
 if [[ -z "${REGIONS[$region]}" || -z "${VERSIONS[$version]}" ]]; then
     echo -e "❌ Invalid input! Exiting."
