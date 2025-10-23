@@ -351,7 +351,7 @@ if [[ -n "$region" ]]; then
     input="${region}${version}"
 else
     # Ak sa region nezistil → používateľ musí zadať Manifest + OTA
-    echo -e "🌍 ${YELLOW}Region not detected — please enter Manifest + OTA manually.${RESET}"
+    echo -e "🌍 ${YELLOW}Region not detected.${RESET}"
     read -p "📌 Manifest + OTA version (e.g. 33F): " input
     region="${input:0:${#input}-1}"
     version="${input: -1}"
