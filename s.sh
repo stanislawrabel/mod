@@ -146,7 +146,6 @@ model_name="${MODEL_NAMES[$clean_model]}"
 # 📋 Výpis ako tabuľka 
 echo -e
 echo -e
-echo -e "${BLUE}${model_name:-Unknown}${RESET}" 
 echo -e
 echo -e "${YELLOW}$ota_version_full${RESET}"
 echo -e "${YELLOW}$real_version_name${RESET}"
@@ -252,7 +251,7 @@ case "$choice" in
 esac
 
 # 🔍 Vyhľadávanie podľa názvu zariadenia
-read -p "🔍 Search model by name (or leave blank to skip): " search_name
+read -p "🔍 Search model by name:" search_name
 if [[ -n "$search_name" ]]; then
   matches=$(grep -i "$search_name" models.txt)
   if [[ -z "$matches" ]]; then
