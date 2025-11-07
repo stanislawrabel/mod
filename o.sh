@@ -87,7 +87,7 @@ done
 
        
     ota_command="realme-ota $server $device_model ${ota_model}_11.${version}.01_0001_100001010001 6 $nv_id"
-    
+    echo -e "🔍 I run the command: ${BLUE}$ota_command${RESET}"
     output=$(eval "$ota_command")
 
     real_ota_version=$(echo "$output" | grep -o '"realOtaVersion": *"[^"]*"' | cut -d '"' -f4)
