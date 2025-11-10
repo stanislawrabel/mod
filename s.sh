@@ -99,7 +99,7 @@ run_ota() {
   clean_model=$(echo "$device_model" | sed 's/IN\|RU\|TR\|EEA\|T2//g')
   base_model="$clean_model"
 
-  ota_command="realme-ota $server $device_model ${base_model}_11.${version}.01_0001_100001010001 6 $nv_id"
+  ota_command="realme-ota $server $device_model ${base_model}_11.${version}.01_0001_100001010000 6 $nv_id"
   echo -e "🔍 I run the command: ${BLUE}$ota_command${RESET}"
   output=$(eval "$ota_command")
   
