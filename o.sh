@@ -86,7 +86,7 @@ run_ota() {
 done
 
        
-    ota_command="realme-ota $server $device_model ${ota_model}_11.${version}.01_0001_100001010001 6 $nv_id"
+    ota_command="realme-ota $server $device_model ${ota_model}_11.${version}.01_0001_100001010000 6 $nv_id"
     echo -e "🔍 I run the command: ${BLUE}$ota_command${RESET}"
     output=$(eval "$ota_command")
 
