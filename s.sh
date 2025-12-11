@@ -31,6 +31,7 @@ declare -A REGIONS=(
     [38]="MY Malaysia 00111000"
     [39]="TH Thailand 00111001" 
     [44]="EUEX Europe 01000100" 
+    [5A]="KZ Kazakhstan 01011010"
     [51]="TR Turkey 01010001"
     [7B]="MX Mexico 01111011" 
     [75]="EG Egypt 01110101" 
