@@ -15,20 +15,21 @@ mkdir -p "$download_dir"
 if ! command -v aria2c &>/dev/null; then
   echo -e "${RED}❌ aria2c not installed .${RESET}"
   echo "👉 Run: pkg install aria2 -y"
-  exit 1
-fi
-
-clear
-echo -e "${GREEN}+========================================+${RESET}"
-echo -e "${GREEN}|===${RESET}     ${YELLOW}DownloadeR${RESET}   ${RED}by${RESET} ${BLUE}Stano36${RESET}      ${G>
-echo -e "${GREEN}+========================================+${RESET}"
-
+  
 while true; do
   read -p "🔗 Enter URL  (Download / downloadCheck): " url
   if [[ -z "$url" || ! "$url" =~ ^https?:// ]]; then
     echo -e "${RED}❌ Invalid URL.${RESET}"
     continue
   fi
+clear
+
+echo -e "${GREEN}+=====================================+${RESET}"
+echo -e "${GREEN}|==${RESET}  ${GREEN}  DownloadeR ${RESET}  ${RED}by${RESET} ${BLUE}Stano36${RESET}    ${GREEN}==|${RESET}"
+echo -e "${GREEN}+=====================================+${RESET}"
+
+echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
+
 
   echo -e "\n🧩 I am verifying the validity of the link....\n"
 
