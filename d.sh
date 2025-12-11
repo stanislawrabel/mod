@@ -2,8 +2,18 @@
 # 🧩 DownloadeR by Stano36 (Termux edition, aria2c + link check)
 
 # === 🎨 COLORS ===
-YELLOW="\033[33m"; BLUE="\033[34m"; RED="\033[31m"
-WHITE="\033[37m"; GREEN="\033[32m"; RESET="\033[0m"
+WHITE="\033[37m"
+PURPLE="\033[35m" 
+YELLOW="\033[33m"
+BLUE="\033[34m"
+RED="\033[31m"
+BLACK="\033[30m"
+WHITE="\033[37m"
+GREEN="\033[32m"
+YELLOW_BG="\033[43m"
+GREEN_BG="\033[42m"
+RED_BG="\033[41m"
+RESET="\033[0m"
 
 # === 📁 PATHS ===
 download_dir="/storage/emulated/0/Download/DownloadeR"
@@ -15,21 +25,25 @@ mkdir -p "$download_dir"
 if ! command -v aria2c &>/dev/null; then
   echo -e "${RED}❌ aria2c not installed .${RESET}"
   echo "👉 Run: pkg install aria2 -y"
-  
+  exit 1
+fi
+
+clear
+
+echo -e "${GREEN}+=====================================+${RESET}"
+echo -e "${GREEN}|==${RESET} ${GREEN}    DownloadeR ${RESET} ${RED}  by${RESET} ${BLUE}Stano36${RESET}   ${GREEN} ==|${RESET}"
+echo -e "${GREEN}+=====================================+${RESET}"
+echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
+echo -e "${GREEN}+=====================================+${RESET}"
+
+
+
 while true; do
-  read -p "🔗 Enter URL  (Download / downloadCheck): " url
+  read -p "🔗 Enter URL : " url
   if [[ -z "$url" || ! "$url" =~ ^https?:// ]]; then
     echo -e "${RED}❌ Invalid URL.${RESET}"
     continue
   fi
-clear
-
-echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|==${RESET}  ${GREEN}  DownloadeR ${RESET}  ${RED}by${RESET} ${BLUE}Stano36${RESET}    ${GREEN}==|${RESET}"
-echo -e "${GREEN}+=====================================+${RESET}"
-
-echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
-
 
   echo -e "\n🧩 I am verifying the validity of the link....\n"
 
