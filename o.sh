@@ -42,6 +42,9 @@ declare -A REGIONS=(
     [9E]="BR Brazil 10011110"
     [97]="CN China 10010111"
 )
+OUT="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
+
+mkdir -p "$(dirname "$OUT")"
 
 declare -A VERSIONS=(
   [A]="Launch version" 
@@ -69,6 +72,18 @@ if [[ -f models.txt ]]; then
   done < models.txt
 fi
 
+resolve_zip() {
+  curl -s -I --http1.1 \
+    -H "User-Agent: Dalvik/2.1.0 (Linux; Android 16)" \
+    -H "userId: oplus-ota|16002018" \
+    -H "Accept: */*" \
+    -H "Accept-Encoding: identity" \
+    "$1" \
+  | grep -i '^location:' \
+  | tail -1 \
+  | awk '{print $2}' \
+  | tr -d '\r'
+}
 
 # 📌 Funkcia na spracovanie OTA
 run_ota() {
@@ -136,23 +151,27 @@ echo -e
 
     download_link=$(echo "$output" | grep -o 'http[s]*://[^"]*' | head -n 1 | sed 's/["\r\n]*$//')
     modified_link=$(echo "$download_link" | sed 's/componentotamanual/componentotamanual/g')       
-# Dynamická úprava linku podľa servera
-#    host=$(echo "$download_link" | sed -E 's#https?://([^/]+).*#\1#')
-  #  domain_suffix=${host#*.}
-  #  server_id=$(echo "$server" | grep -o '[0-9]\+' || echo "3")
+FINAL_ZIP_URL="$download_link"
 
-    case "$server_id" in
-        3) server_code="eu" ;;
-        2) server_code="in" ;;
-        1) server_code="cn" ;;
-        0) server_code="sg" ;;
-        *) server_code="eu" ;;
-    esac
+if [[ "$download_link" == *"downloadCheck"* ]]; then
+    FINAL_ZIP_URL=$(resolve_zip "$download_link")
+fi
+OUT="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
 
- #   new_label="gauss-opexcostmanual"
-    [[ -n "$server_code" ]] && new_label="${new_label}-${server_code}"
-    modified_host="${new_label}.${domain_suffix}"
-    modified_link="${download_link/$host/$modified_host}"
+mkdir -p "$(dirname "$OUT")"
+
+cat > "$OUT" <<EOF
+MODEL=$device_model
+REGION=$region_data
+OTA=$ota_version_full
+ANDROID="Android $android_version"
+OS="$os_version"
+PATCH=$security_os
+VERSION=$version_type_id
+LOCAL_INSTALL=$local_install_raw
+ABOUT="$about_update_url"
+DOWNLOAD="$FINAL_ZIP_URL"
+EOF
 
 
     echo -e "📥    About this update: 
@@ -164,6 +183,12 @@ ${GREEN}$modified_link${RESET}"
         echo -e "❌ Download link not found."
         echo -e "❌ No download link found."
    fi
+   
+if [[ -n "$FINAL_ZIP_URL" ]]; then
+  echo -e "📥   Resolved link:\n${GREEN}$FINAL_ZIP_URL${RESET}"
+else
+  echo "❌ No download link found."
+fi
     echo "$ota_version_full" >> "ota_${device_model}.txt"
     echo "$modified_link" >> "ota_${device_model}.txt"
     echo "" >> "ota_${device_model}.txt"
