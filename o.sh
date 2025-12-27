@@ -14,6 +14,10 @@ GREEN_BG="\033[42m"
 RED_BG="\033[41m"
 RESET="\033[0m"
 
+OUT="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
+
+mkdir -p "$(dirname "$OUT")"
+
 
 # 📌 Regióny, verzie a servery
 declare -A REGIONS=(
@@ -42,9 +46,6 @@ declare -A REGIONS=(
     [9E]="BR Brazil 10011110"
     [97]="CN China 10010111"
 )
-OUT="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
-
-mkdir -p "$(dirname "$OUT")"
 
 declare -A VERSIONS=(
   [A]="Launch version" 
@@ -83,6 +84,13 @@ resolve_zip() {
   | tail -1 \
   | awk '{print $2}' \
   | tr -d '\r'
+}
+
+fix_old_zip() {
+  local url="$1"
+
+  echo "$url" | sed \
+    -e 's|gauss-componentotamanual.allawnofs.com|gauss-opexcostmanual-eu.allawnofs.com|'
 }
 
 # 📌 Funkcia na spracovanie OTA
@@ -150,12 +158,24 @@ echo -e
 
 
     download_link=$(echo "$output" | grep -o 'http[s]*://[^"]*' | head -n 1 | sed 's/["\r\n]*$//')
-    modified_link=$(echo "$download_link" | sed 's/componentotamanual/componentotamanual/g')       
+   modified_link=$(echo "$download_link" | sed 's/componentotamanual/componentotamanual/g')       
+
+fixed_zip=$(fix_old_zip "$download_link")
+
+if [[ "$download_link" == *"downloadCheck"* ]]; then
+  resolved_zip=$(resolve_zip "$download_link")
+else
+  resolved_zip="$fixed_zip"
+fi
+
+
 FINAL_ZIP_URL="$download_link"
 
 if [[ "$download_link" == *"downloadCheck"* ]]; then
     FINAL_ZIP_URL=$(resolve_zip "$download_link")
 fi
+fixed_zip=$(fix_old_zip "$download_link")
+
 OUT="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
 
 mkdir -p "$(dirname "$OUT")"
@@ -177,15 +197,16 @@ EOF
     echo -e "📥    About this update: 
 ${GREEN}$about_update_url${RESET}"
     if [[ -n "$modified_link" ]]; then
-    echo -e "📥   Download link: 
+    echo -e "📥    Download link: 
 ${GREEN}$modified_link${RESET}"
     else
         echo -e "❌ Download link not found."
-        echo -e "❌ No download link found."
+        
    fi
-   
+
 if [[ -n "$FINAL_ZIP_URL" ]]; then
-  echo -e "📥   Resolved link:\n${GREEN}$FINAL_ZIP_URL${RESET}"
+echo -e "📥    Resolved link:"
+echo -e "${GREEN}$resolved_zip${RESET}"
 else
   echo "❌ No download link found."
 fi
