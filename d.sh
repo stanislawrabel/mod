@@ -1,25 +1,13 @@
-#!/bin/bash
-# 🧩 DownloadeR by Stano36 (Termux edition, aria2c + link check)
+#!/data/data/com.termux/files/usr/bin/bash
 
-# === 🎨 COLORS ===
-WHITE="\033[37m"
-PURPLE="\033[35m" 
-YELLOW="\033[33m"
-BLUE="\033[34m"
-RED="\033[31m"
-BLACK="\033[30m"
-WHITE="\033[37m"
-GREEN="\033[32m"
-YELLOW_BG="\033[43m"
-GREEN_BG="\033[42m"
-RED_BG="\033[41m"
-RESET="\033[0m"
+COMMON_FILE="/storage/emulated/0/Download/DownloadeR/ota_common.txt"
 
-# === 📁 PATHS ===
-download_dir="/storage/emulated/0/Download/DownloadeR"
-log_file="$download_dir/Download_History.txt"
+if [[ ! -f "$COMMON_FILE" ]]; then
+  echo "❌ ota_common.txt not found"
+  exit 1
+fi
 
-mkdir -p "$download_dir"
+source "$COMMON_FILE"
 
 # === 🧠 CHECK ARIA2 ===
 if ! command -v aria2c &>/dev/null; then
@@ -28,60 +16,61 @@ if ! command -v aria2c &>/dev/null; then
   exit 1
 fi
 
-clear
+FINAL_URL="$DOWNLOAD"
 
-echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|==${RESET} ${GREEN}    DownloadeR ${RESET} ${RED}  by${RESET} ${BLUE}Stano36${RESET}   ${GREEN} ==|${RESET}"
-echo -e "${GREEN}+=====================================+${RESET}"
-echo -e "${GREEN}|${RESET} ${YELLOW_BG}${BLACK}  realme   ${RESET} ${GREEN_BG}${BLACK}   oppo   ${RESET} ${RED_BG}${WHITE}  OnePlus   ${RESET} ${GREEN}|${RESET}"
-echo -e "${GREEN}+=====================================+${RESET}"
+if [[ ! "$FINAL_URL" =~ ^https?:// ]]; then
+  echo "❌ Invalid FINAL_URL"
+  exit 1
+fi
+# === LOAD COMMON ===
+fix_old_zip() {
+  echo "$1" | sed 's/gauss-componentotamanual/gauss-opexcostmanual-eu/'
+}
+
+resolve_zip() {
+  curl -s -I --http1.1 \
+    -H "User-Agent: Dalvik/2.1.0 (Linux; Android 16)" \
+    -H "userId: oplus-ota|16002018" \
+    -H "Accept: */*" \
+    -H "Accept-Encoding: identity" \
+    "$1" \
+  | grep -i '^location:' \
+  | tail -1 \
+  | awk '{print $2}' \
+  | tr -d '\r'
+}
+
+FINAL_URL="$DOWNLOAD"
+
+# === RESOLVE IF NEEDED ===
+if [[ "$FINAL_URL" == *"downloadCheck"* ]]; then
+  echo "🔄 Resolving downloadCheck…"
+  FINAL_URL=$(resolve_zip "$FINAL_URL")
+fi
+
+# === VALIDATION ===
+if [[ -z "$FINAL_URL" || ! "$FINAL_URL" =~ ^https?:// ]]; then
+  echo "❌ Invalid FINAL_URL"
+  exit 1
+fi
+
+echo "📥 Downloading:"
+echo "$FINAL_URL"
+echo "➡️  Saving as: $FINAL_NAME"
 
 
+TARGET_DIR="/storage/emulated/0/Download/DownloadeR"
+TARGET_NAME="${OTA}.zip"
 
-while true; do
-  read -p "🔗 Enter URL : " url
-  if [[ -z "$url" || ! "$url" =~ ^https?:// ]]; then
-    echo -e "${RED}❌ Invalid URL.${RESET}"
-    continue
-  fi
+aria2c "$FINAL_URL" -d "$TARGET_DIR" -o "$TARGET_NAME"
 
-  echo -e "\n🧩 I am verifying the validity of the link....\n"
+FINAL_PATH="$TARGET_DIR/$TARGET_NAME"
 
-  # === 🔍 HEAD CHECK ===
-  status_code=$(curl -s -o /dev/null -w "%{http_code}" -L --max-time 10 "$url")
+if [[ -n "$MD5" && -f "$FINAL_PATH" ]]; then
+  echo "🔐 Verifying MD5..."
+  echo "$MD5  $FINAL_PATH" | md5sum -c -
+else
+  echo "⚠️ MD5 skipped (missing hash or file)"
+fi
 
-  if [[ "$status_code" != "200" ]]; then
-    echo -e "${RED}⚠️ Link invalid or expired.  (HTTP $status_code).${RESET}"
-    echo -e "🔁 Get a new link via realme-ota and try again..\n"
-    continue
-  fi
-
-  filename=$(basename "${url%%\?*}")
-  read -p "💾 File name  (Default: $filename): " filename_input
-  filename="${filename_input:-$filename}"
-
-  echo -e "\n📥 Downloading $filename...\n"
-  start_time=$(date '+%Y-%m-%d %H:%M:%S')
-
-  aria2c -c -x 16 -s 16 -d "$download_dir" -o "$filename" "$url"
-
-  if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ File downloaded successfully.${RESET}"
-    echo -e "📂 Saved in : ${YELLOW}$download_dir${RESET}\n"
-    end_time=$(date '+%Y-%m-%d %H:%M:%S')
-    echo -e "[$(date '+%F %T')] ✅ $filename | $url" >> "$log_file"
-  else
-    echo -e "${RED}❌ Error while downloading.${RESET}"
-    echo -e "[$(date '+%F %T')] ❌ ERROR | $url" >> "$log_file"
-  fi
-
-  echo -e "${GREEN}──────────────────────────────────────${RESET}\n"
-  echo -e "🔄 1 - Download another file"
-  echo -e "❌ 0 - Exit"
-  echo -e
-  read -p "💡 Select an option  (1/0): " option
-  case "$option" in    1) clear ;;
-    0) echo -e "👋 End. Log saved in $log_file"; exit 0 ;;
-    *) echo -e "${RED}Invalid choice.${RESET}" ;;
-  esac
-done
+echo "✅ Done: $FINAL_PATH"
